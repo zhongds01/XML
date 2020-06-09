@@ -33,6 +33,14 @@ hs_err_pid*
 *.iml
 *.iws
 
+# maven ignore
+target/
+*.jar
+*.war
+*.zip
+*.tar
+*.tar.gz
+
 # temp ignore
 logs/
 *.doc
