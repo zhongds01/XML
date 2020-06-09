@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<users>
+	<user id="1">
+		<name id="name">tom</name>
+		<age>23</age>
+		<phone>10010</phone>
+		<address>America</address>
+		<createDate>20200522</createDate>
+	</user>
+	<user id="2">
+		<name>rose</name>
+		<age>24</age>
+		<phone>10086</phone>
+		<address>China</address>
+		<createDate>20100523</createDate>
+	</user>
+</users>
