@@ -1,5 +1,7 @@
 package com.zds;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -24,8 +26,9 @@ import java.io.IOException;
  */
 public class XmlCreateUtils {
 
-    private static File file = new File("create.xml");
-    static void createXmlByDom(){
+    private static final Logger logger = LoggerFactory.getLogger(XmlCreateUtils.class);
+
+    static void createXmlByDom() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -38,7 +41,7 @@ public class XmlCreateUtils {
             Element name = document.createElement("name");
             Element age = document.createElement("age");
             // 为元素设置属性节点
-            user.setAttribute("id","1");
+            user.setAttribute("id", "1");
             // 设置文本节点
             name.setTextContent("Tom");
             // name.setNodeValue("xxx");
@@ -52,19 +55,22 @@ public class XmlCreateUtils {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             // 解决换行问题
-            transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount","4");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "");
             // 生成xml文件
-            transformer.transform(new DOMSource(document),new StreamResult(new File("src/main/resources/userDom.xml")));
-            System.out.println("user1.xml创建成功...");
+            transformer.transform(new DOMSource(document), new StreamResult(new File("src/main/resources/userDom.xml")));
+            logger.info("create userDim.xml successfully...");
         } catch (ParserConfigurationException | TransformerException e) {
-            e.printStackTrace();
-            System.out.println("user1.xml创建失败...");
+            logger.error("Failed to create userDom.xml ... ",e);
         }
     }
 
-    static void createXmlBySax(){
+    /**
+     * sax方式个人感觉不怎么好用
+     */
+    static void createXmlBySax() {
         // 创建sax转换类的工厂
         SAXTransformerFactory factory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
         try {
@@ -73,37 +79,50 @@ public class XmlCreateUtils {
             Transformer transformer = transformerHandler.getTransformer();
 
             // xml设置
-            transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
-            transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "");
 
             // 创建File对象
             File file = new File("src/main/resources/userSax.xml");
-            if (!file.exists()){
-                try {
-                    boolean newFile = file.createNewFile();
-                    Result result = new StreamResult(new FileOutputStream(file));
-                    transformerHandler.setResult(result);
-                    transformerHandler.startDocument();
-                    AttributesImpl attributes = new AttributesImpl();
-                    transformerHandler.startElement("","","root",attributes);
-                    attributes.clear();
-                    // 创建name
-                    transformerHandler.startElement("","","user",attributes);
-                    attributes.clear();
-                    transformerHandler.startElement("","","name",attributes);
-                    attributes.clear();
-                    attributes.addAttribute("","","id","","1");
-                    transformerHandler.characters("12".toCharArray(),0,1);
-                    transformerHandler.endElement("","","name");
-                    transformerHandler.endElement("","","user");
-                    transformerHandler.endElement("","","root");
-                } catch (IOException |SAXException e) {
-                    e.printStackTrace();
-                }
-            }
 
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
+            Result result = new StreamResult(new FileOutputStream(file));
+            transformerHandler.setResult(result);
+            transformerHandler.startDocument();
+            AttributesImpl attributes = new AttributesImpl();
+            transformerHandler.startElement("", "", "root", attributes);
+            attributes.clear();
+            // 创建name
+            transformerHandler.startElement("", "", "user", attributes);
+            attributes.clear();
+
+            transformerHandler.startElement("", "", "name", attributes);
+            attributes.clear();
+            attributes.addAttribute("", "", "id", "", "1");
+            transformerHandler.characters("tomSax".toCharArray(), 0, 6);
+            transformerHandler.endElement("", "", "name");
+
+            attributes.clear();
+            transformerHandler.startElement("", "", "age", attributes);
+            attributes.clear();
+            transformerHandler.characters("23".toCharArray(), 0, 2);
+            transformerHandler.endElement("", "", "age");
+
+            transformerHandler.endElement("", "", "user");
+
+            transformerHandler.endElement("", "", "root");
+            transformerHandler.endDocument();
+            logger.info("create userSax.xml successfully ...");
+        } catch (IOException | SAXException | TransformerConfigurationException e) {
+            logger.error("failed to create userSax.xml ...");
         }
+    }
+    static void createXmlByJDom(){
+
+    }
+
+    static void createXmlByDom4j(){
+
     }
 }
