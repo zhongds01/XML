@@ -1,11 +1,11 @@
 package com.zds;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,7 +27,8 @@ import java.util.List;
  */
 class XmlParseUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(XmlParseUtils.class);
+    private static final Logger logger = LogManager.getLogger(XmlParseUtils.class);
+
 
     static File file = new File("D:\\GitHub\\XML\\XmlParse\\src\\main\\resources\\userInfo.xml");
     /**
