@@ -9,6 +9,15 @@ import org.junit.Test;
  */
 public class XmlCreateUtilsTest {
     @Test
+    public void createXmlByJDom() throws Exception {
+        XmlCreateUtils.createXmlByJDom();
+    }
+
+    @Test
+    public void createXmlByDom4j() throws Exception {
+    }
+
+    @Test
     public void createXmlBySax() throws Exception {
         XmlCreateUtils.createXmlBySax();
     }
