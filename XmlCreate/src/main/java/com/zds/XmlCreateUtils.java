@@ -76,7 +76,7 @@ public class XmlCreateUtils {
             transformer.transform(new DOMSource(document), new StreamResult(new File("src/main/resources/userDom.xml")));
             logger.info("create userDom.xml successfully...");
         } catch (ParserConfigurationException | TransformerException e) {
-            logger.error("Failed to create userDom.xml ... ",e);
+            logger.error("Failed to create userDom.xml ... ", e);
         }
     }
 
@@ -139,12 +139,12 @@ public class XmlCreateUtils {
      * 2、由根元素创建document对象
      * 3、需要事先定义好每个元素，再对各个元素设置父子结构
      */
-    static void createXmlByJDom(){
+    static void createXmlByJDom() {
         logger.info("begin to create userJDom.xml ... ");
         // 1、创建根元素节点
         org.jdom2.Element rootElement = new org.jdom2.Element("root");
         // 2、为根节点创建属性
-        rootElement.setAttribute("name","root");
+        rootElement.setAttribute("name", "root");
         // 3、生成Document对象
         org.jdom2.Document document = new org.jdom2.Document(rootElement);
         // 4、创建其他元素节点
@@ -152,8 +152,8 @@ public class XmlCreateUtils {
         org.jdom2.Element elementChild1 = new org.jdom2.Element("user");
         org.jdom2.Element elementChild2 = new org.jdom2.Element("user");
         // 5、设置元素节点信息
-        elementChild1.setAttribute("id","1");
-        elementChild2.setAttribute("id","2");
+        elementChild1.setAttribute("id", "1");
+        elementChild2.setAttribute("id", "2");
         org.jdom2.Element name = new org.jdom2.Element("name");
         org.jdom2.Element age = new org.jdom2.Element("age");
         org.jdom2.Element name1 = new org.jdom2.Element("name");
@@ -162,8 +162,8 @@ public class XmlCreateUtils {
         age.setText("23");
         name1.setText("RoseJDom");
         age1.setText("24");
-        List<org.jdom2.Element> elements = new ArrayList<org.jdom2.Element>(Arrays.asList(name,age));
-        List<org.jdom2.Element> elements1 = new ArrayList<org.jdom2.Element>(Arrays.asList(name1,age1));
+        List<org.jdom2.Element> elements = new ArrayList<org.jdom2.Element>(Arrays.asList(name, age));
+        List<org.jdom2.Element> elements1 = new ArrayList<org.jdom2.Element>(Arrays.asList(name1, age1));
         elementChild1.addContent(elements);
         // FIXME: 2020/6/15 已经定义的Element元素（name，age）不可以复用，但重复定义Element会造成内存浪费，后续寻找可替代方案
 //        elements.get(0).setText("RoseJDom");
@@ -182,7 +182,7 @@ public class XmlCreateUtils {
         XMLOutputter xmlOutputter = new XMLOutputter(format);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(new File("src/main/resources/userJDom.xml"));
-            xmlOutputter.output(document,fileOutputStream);
+            xmlOutputter.output(document, fileOutputStream);
             logger.info("create userJDom.xml successfully ... ");
         } catch (IOException e) {
             logger.error("Failed to create userJDom.xml ... ");
@@ -199,7 +199,7 @@ public class XmlCreateUtils {
      * 5、也不像jDom，先创建好各个元素后，再设置各元素父子节点关系
      * 6、通过XmlWriter输出流将document写入xml文档
      */
-    static void createXmlByDom4j(){
+    static void createXmlByDom4j() {
         logger.info("begin to create userDom4j.xml ...");
         // 1、创建dom对象
         org.dom4j.Document document = DocumentHelper.createDocument();
@@ -210,7 +210,7 @@ public class XmlCreateUtils {
         org.dom4j.Element name = user.addElement("name");
         org.dom4j.Element age = user.addElement("age");
         // 给元素设置属性信息
-        user.addAttribute("id","1");
+        user.addAttribute("id", "1");
         // 设置值
         name.setText("tomDom4j");
         age.setText("23\\t\\n\\r<");
@@ -221,7 +221,7 @@ public class XmlCreateUtils {
         File file = new File("src/main/resources/userDom4j.xml");
         XMLWriter xmlWriter = null;
         try {
-            xmlWriter = new XMLWriter(new FileOutputStream(file),format);
+            xmlWriter = new XMLWriter(new FileOutputStream(file), format);
             // 设置不转义特殊字符，会把<输出到xml元素节点内容中
             xmlWriter.setEscapeText(true);
             xmlWriter.write(document);
