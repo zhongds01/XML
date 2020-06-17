@@ -15,6 +15,7 @@ public class XmlCreateUtilsTest {
 
     @Test
     public void createXmlByDom4j() throws Exception {
+        XmlCreateUtils.createXmlByDom4j();
     }
 
     @Test

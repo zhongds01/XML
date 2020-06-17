@@ -1,5 +1,10 @@
 package com.zds;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.w3c.dom.Document;
@@ -29,11 +34,16 @@ import java.util.List;
  */
 public class XmlCreateUtils {
 
-    // private static final Logger logger = LoggerFactory.getLogger(XmlCreateUtils.class);
+    private static final Logger logger = LogManager.getLogger(XmlCreateUtils.class);
 
+    /**
+     * 通过dom创建xml
+     * 原生方式，通过document统一创建xml元素
+     */
     static void createXmlByDom() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
+            logger.info("create userDom.xml begins ...");
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.newDocument();
             // 不显示standalone="no"
@@ -64,9 +74,9 @@ public class XmlCreateUtils {
             transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "");
             // 生成xml文件
             transformer.transform(new DOMSource(document), new StreamResult(new File("src/main/resources/userDom.xml")));
-            // logger.info("create userDim.xml successfully...");
+            logger.info("create userDom.xml successfully...");
         } catch (ParserConfigurationException | TransformerException e) {
-            // logger.error("Failed to create userDom.xml ... ",e);
+            logger.error("Failed to create userDom.xml ... ",e);
         }
     }
 
@@ -77,6 +87,7 @@ public class XmlCreateUtils {
         // 创建sax转换类的工厂
         SAXTransformerFactory factory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
         try {
+            logger.info("begin to create userSax.xml ... ");
             // 获取转换对象
             TransformerHandler transformerHandler = factory.newTransformerHandler();
             Transformer transformer = transformerHandler.getTransformer();
@@ -116,12 +127,20 @@ public class XmlCreateUtils {
 
             transformerHandler.endElement("", "", "root");
             transformerHandler.endDocument();
-            // logger.info("create userSax.xml successfully ...");
+            logger.info("create userSax.xml successfully ...");
         } catch (IOException | SAXException | TransformerConfigurationException e) {
-            // logger.error("failed to create userSax.xml ...");
+            logger.error("failed to create userSax.xml ...");
         }
     }
+
+    /**
+     * 通过jDom创建xml文件
+     * 1、生成根元素节点
+     * 2、由根元素创建document对象
+     * 3、需要事先定义好每个元素，再对各个元素设置父子结构
+     */
     static void createXmlByJDom(){
+        logger.info("begin to create userJDom.xml ... ");
         // 1、创建根元素节点
         org.jdom2.Element rootElement = new org.jdom2.Element("root");
         // 2、为根节点创建属性
@@ -157,20 +176,59 @@ public class XmlCreateUtils {
         // 7、设置生成xml文档格式
         Format format = Format.getCompactFormat();
         format.setEncoding("UTF-8");
-        // 设置换行缩进四个空格
-        format.setIndent("    ");
+        // 设置换行缩进二个空格
+        format.setIndent("  ");
         // 8、创建XMLOutputter对象
         XMLOutputter xmlOutputter = new XMLOutputter(format);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(new File("src/main/resources/userJDom.xml"));
             xmlOutputter.output(document,fileOutputStream);
+            logger.info("create userJDom.xml successfully ... ");
         } catch (IOException e) {
-            System.out.println(" create userJDom.xml successfully ... ");
+            logger.error("Failed to create userJDom.xml ... ");
         }
 
     }
 
+    /**
+     * 通过dom4j创建xml
+     * 1、创建document对象
+     * 2、document对象创建根元素
+     * 3、根元素创建其他元素
+     * 4、各级元素可以通过父元素直接创建，不像dom，所有元素都由document创建
+     * 5、也不像jDom，先创建好各个元素后，再设置各元素父子节点关系
+     * 6、通过XmlWriter输出流将document写入xml文档
+     */
     static void createXmlByDom4j(){
-
+        logger.info("begin to create userDom4j.xml ...");
+        // 1、创建dom对象
+        org.dom4j.Document document = DocumentHelper.createDocument();
+        // 2、创建元素节点
+        org.dom4j.Element root = document.addElement("root");
+        org.dom4j.Element users = root.addElement("users");
+        org.dom4j.Element user = users.addElement("user");
+        org.dom4j.Element name = user.addElement("name");
+        org.dom4j.Element age = user.addElement("age");
+        // 给元素设置属性信息
+        user.addAttribute("id","1");
+        // 设置值
+        name.setText("tomDom4j");
+        age.setText("23\\t\\n\\r<");
+        // 设置生成xml格式
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setNewLineAfterDeclaration(false);
+        // 生成xml
+        File file = new File("src/main/resources/userDom4j.xml");
+        XMLWriter xmlWriter = null;
+        try {
+            xmlWriter = new XMLWriter(new FileOutputStream(file),format);
+            // 设置不转义特殊字符，会把<输出到xml元素节点内容中
+            xmlWriter.setEscapeText(true);
+            xmlWriter.write(document);
+            xmlWriter.close();
+            logger.info("create userDom4j.xml successfully...");
+        } catch (IOException e) {
+            logger.error("Failed to create userDom4j.xml ...");
+        }
     }
 }

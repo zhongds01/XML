@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <users>
+    <user id="1">
+      <name>tomDom4j</name>
+      <age>23\t\n\r&lt;</age>
+    </user>
+  </users>
+</root>
